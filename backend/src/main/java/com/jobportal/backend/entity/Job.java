@@ -40,6 +40,10 @@ public class Job {
     @Builder.Default
     private JobStatus status = JobStatus.OPEN;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean approved = false;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;

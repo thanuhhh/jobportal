@@ -18,6 +18,7 @@ public class JobResponse {
     private JobType type;
     private Integer experienceYears;
     private JobStatus status;
+    private boolean approved;
     private Long categoryId;
     private String categoryName;
     private Long companyId;

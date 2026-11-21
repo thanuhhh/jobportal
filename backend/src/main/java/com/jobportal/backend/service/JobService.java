@@ -131,6 +131,7 @@ public class JobService {
                 .type(j.getType())
                 .experienceYears(j.getExperienceYears())
                 .status(j.getStatus())
+                .approved(j.isApproved())
                 .categoryId(j.getCategory().getId())
                 .categoryName(j.getCategory().getName())
                 .companyId(j.getCompany().getId())
