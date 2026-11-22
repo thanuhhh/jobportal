@@ -24,6 +24,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final JobRepository jobRepository;
     private final CurrentUserService currentUserService;
+    private final EmailService emailService;
 
     @Transactional
     public ApplicationResponse apply(Long jobId, String coverLetter) {
@@ -43,7 +44,13 @@ public class ApplicationService {
                 .seeker(me)
                 .coverLetter(coverLetter)
                 .build();
-        return toResponse(applicationRepository.save(app));
+        Application saved = applicationRepository.save(app);
+        emailService.send(me.getEmail(), "Application received: " + job.getTitle(),
+                "Hi " + me.getName() + ",\n\nYour application for " + job.getTitle()
+                        + " at " + job.getCompany().getName() + " was received.\n\nJobPortal");
+        emailService.send(job.getCompany().getRecruiter().getEmail(), "New applicant: " + job.getTitle(),
+                me.getName() + " applied for " + job.getTitle() + ".");
+        return toResponse(saved);
     }
 
     @Transactional(readOnly = true)

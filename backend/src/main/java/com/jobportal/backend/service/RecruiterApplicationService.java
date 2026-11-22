@@ -28,6 +28,7 @@ public class RecruiterApplicationService {
     private final JobRepository jobRepository;
     private final JobSeekerProfileRepository profileRepository;
     private final CurrentUserService currentUserService;
+    private final EmailService emailService;
 
     @Transactional(readOnly = true)
     public PageResponse<ApplicantResponse> applicants(Long jobId, int page, int size) {
@@ -53,7 +54,11 @@ public class RecruiterApplicationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found"));
         checkOwner(app.getJob());
         app.setStatus(status);
-        return toResponse(applicationRepository.save(app));
+        Application saved = applicationRepository.save(app);
+        emailService.send(app.getSeeker().getEmail(), "Application update: " + app.getJob().getTitle(),
+                "Hi " + app.getSeeker().getName() + ",\n\nYour application for " + app.getJob().getTitle()
+                        + " is now " + status + ".\n\nJobPortal");
+        return toResponse(saved);
     }
 
     private void checkOwner(Job job) {
